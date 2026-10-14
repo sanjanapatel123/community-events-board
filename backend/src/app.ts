@@ -5,6 +5,9 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth.routes.js";
 import adminEventRoutes from "./routes/admin-event.routes.js";
+import eventRoutes from "./routes/event.routes.js";
+import favouriteRoutes from "./routes/favourite.routes.js";
+import feedRoutes from "./routes/feed.routes.js";
 
 const app = express();
 
@@ -54,6 +57,9 @@ app.get("/api/health", (_req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/admin/events", adminEventRoutes);
+app.use("/api/events", eventRoutes);
+app.use("/api/favourites", favouriteRoutes);
+app.use("/api/feed", feedRoutes);
 
 app.use((_req, res) => {
   res.status(404).json({ message: "Route not found" });

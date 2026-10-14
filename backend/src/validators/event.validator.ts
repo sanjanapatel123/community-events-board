@@ -53,3 +53,19 @@ export const adminEventQuerySchema = z
     limit: z.coerce.number().int().min(1).max(50).default(10),
   })
   .strict();
+
+export const publicEventQuerySchema = z
+  .object({
+    category: z
+      .enum(["MUSIC", "WORKSHOP", "FOOD", "SPORTS", "KIDS"])
+      .optional(),
+
+    city: z.string().trim().min(1).max(100).optional(),
+
+    search: z.string().trim().min(1).max(200).optional(),
+
+    page: z.coerce.number().int().min(1).max(100000).default(1),
+
+    limit: z.coerce.number().int().min(1).max(50).default(9),
+  })
+  .strict();
