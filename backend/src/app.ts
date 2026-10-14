@@ -4,6 +4,7 @@ import type { ErrorRequestHandler } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth.routes.js";
+import adminEventRoutes from "./routes/admin-event.routes.js";
 
 const app = express();
 
@@ -52,6 +53,7 @@ app.get("/api/health", (_req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/admin/events", adminEventRoutes);
 
 app.use((_req, res) => {
   res.status(404).json({ message: "Route not found" });
