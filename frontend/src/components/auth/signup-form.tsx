@@ -1,0 +1,108 @@
+"use client";
+
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ArrowRight } from "lucide-react";
+import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useSignup } from "@/hooks/use-auth";
+import { authSchema, type AuthFormValues } from "@/lib/validations/auth";
+
+export function SignupForm() {
+  const signup = useSignup();
+  const router = useRouter();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<AuthFormValues>({
+    resolver: zodResolver(authSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  function onSubmit(values: AuthFormValues) {
+    signup.mutate(values, {
+      onSuccess: () => {
+        toast.success("Account created. Sign in to get started.");
+        router.replace("/login");
+      },
+    });
+  }
+
+  return (
+    <form
+      noValidate
+      aria-label="Create account"
+      onSubmit={handleSubmit(onSubmit)}
+      className="space-y-5"
+    >
+      <Input
+        id="signup-email"
+        label="Email address"
+        type="email"
+        autoComplete="email"
+        autoCapitalize="none"
+        spellCheck={false}
+        placeholder="you@example.com"
+        disabled={signup.isPending}
+        error={errors.email?.message}
+        {...register("email")}
+      />
+
+      <Input
+        id="signup-password"
+        label="Password"
+        type="password"
+        autoComplete="new-password"
+        placeholder="At least 8 characters"
+        disabled={signup.isPending}
+        error={errors.password?.message}
+        {...register("password")}
+      />
+
+      {signup.isError && (
+        <p
+          role="alert"
+          className="rounded-xl border border-danger/15
+            bg-danger/5 px-4 py-3 text-sm leading-6 text-danger"
+        >
+          {signup.error.message}
+        </p>
+      )}
+
+      <Button
+        type="submit"
+        loading={signup.isPending}
+        className="group min-h-12 w-full"
+      >
+        {signup.isPending ? "Creating account…" : "Create account"}
+
+        {!signup.isPending && (
+          <ArrowRight
+            aria-hidden="true"
+            className="size-4 transition-transform duration-200
+              motion-safe:group-hover:translate-x-1"
+          />
+        )}
+      </Button>
+
+      <p className="pt-2 text-center text-sm leading-6 text-muted">
+        Already a member?{" "}
+        <Link
+          href="/login"
+          className="font-semibold text-brand-ink underline-offset-4
+            transition-colors hover:text-foreground hover:underline"
+        >
+          Sign in
+        </Link>
+      </p>
+    </form>
+  );
+}
