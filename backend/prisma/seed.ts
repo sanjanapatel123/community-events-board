@@ -1,8 +1,9 @@
 import "dotenv/config";
 import * as argon2 from "argon2";
 import { prisma } from "../src/lib/prisma.js";
+import { seedEvents } from "./seed-events.js";
 
-async function main() {
+async function seedAdmin() {
   const email = process.env.ADMIN_EMAIL?.trim().toLowerCase();
   const password = process.env.ADMIN_PASSWORD;
 
@@ -23,19 +24,22 @@ async function main() {
     return;
   }
 
-  const passwordHash = await argon2.hash(password, {
-    type: argon2.argon2id,
-  });
-
   await prisma.user.create({
     data: {
       email,
-      passwordHash,
+      passwordHash: await argon2.hash(password, {
+        type: argon2.argon2id,
+      }),
       role: "ADMIN",
     },
   });
 
   console.log(`Admin created: ${email}`);
+}
+
+async function main() {
+  await seedAdmin();
+  await seedEvents();
 }
 
 main()

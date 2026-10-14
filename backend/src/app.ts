@@ -9,6 +9,7 @@ import eventRoutes from "./routes/event.routes.js";
 import favouriteRoutes from "./routes/favourite.routes.js";
 import feedRoutes from "./routes/feed.routes.js";
 import reminderRoutes from "./routes/reminder.routes.js";
+import cardDesignRoutes from "./routes/card-design.routes.js";
 
 const app = express();
 
@@ -62,6 +63,7 @@ app.use("/api/events", eventRoutes);
 app.use("/api/favourites", favouriteRoutes);
 app.use("/api/feed", feedRoutes);
 app.use("/api/reminders", reminderRoutes);
+app.use("/api/card-designs", cardDesignRoutes);
 
 app.use((_req, res) => {
   res.status(404).json({ message: "Route not found" });
